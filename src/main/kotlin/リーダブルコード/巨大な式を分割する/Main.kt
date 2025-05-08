@@ -1,5 +1,48 @@
 package org.example.リーダブルコード.巨大な式を分割する
 
+import java.time.LocalDate
+
+/*問題---------------------------------------------------------------------------------------------*/
+
+/**
+ *
+ * オンラインショップで商品を注文する際の割引適用ロジックを実装してください。
+ * 条件が複雑なので、可読性が低くなっています。
+ * そのため、「説明変数」や「要約変数」などを使って式を分割し、
+ * 可読性の高いコードへリファクタリングしてください。
+ *
+ * 条件：
+ * ・注文者がプレミアム会員である
+ * ・かつ注文金額が10000円以上である
+ * ・かつ注文日がセール期間内である（例：2025年5月1日〜5月10日）
+ *
+ * 上記のすべてを満たす場合に、注文に対して割引を適用してください。
+ *
+ */
+
+fun applyDiscountIfEligible(
+    isPremiumUser: Boolean,
+    totalAmount: Int,
+    orderDate: LocalDate
+): Boolean {
+    return isPremiumUser &&
+            totalAmount >= 10_000 &&
+            (orderDate >= LocalDate.of(2025, 5, 1) &&
+                    orderDate <= LocalDate.of(2025, 5, 10))
+}
+
+fun main() {
+    val isPremiumUser = true
+    val totalAmount = 12000
+    val orderDate = LocalDate.of(2025, 5, 4)
+
+    if (applyDiscountIfEligible(isPremiumUser, totalAmount, orderDate)) {
+        println("割引を適用しました")
+    } else {
+        println("割引の適用条件を満たしていません")
+    }
+}
+
 /*メモ---------------------------------------------------------------------------------------------*/
 
 /**
@@ -40,11 +83,12 @@ fun sample1() {
     }
 
     val userOwnsDocument = request.user.id == document.ownerId
-    if (userOwnsDocument){
+    if (userOwnsDocument) {
         println("わかりやすい！")
     }
 
-    if (!userOwnsDocument){5
+    if (!userOwnsDocument) {
+        5
         println("わかりやすい！")
     }
 }
@@ -58,7 +102,7 @@ fun sample1() {
  *
  */
 
-fun sample2(){
+fun sample2() {
     data class Range(val begin: Int, val end: Int) {
         fun overlapsWithV1(other: Range): Boolean {
             return (begin >= other.begin && begin <= other.end) ||
@@ -67,8 +111,8 @@ fun sample2(){
 
         // 重ならないように判定することで式が単純化する！
         fun overlapsWithV2(other: Range): Boolean {
-            if(other.end <= begin) return false
-            if(other.begin >= end) return false
+            if (other.end <= begin) return false
+            if (other.begin >= end) return false
             return true
         }
     }
