@@ -1,7 +1,9 @@
 # 概要
+
 このページはオライリージャパンの「Web API The Good Parts」の2章-エンドポイントの設計とリクエストの形式を読んで、学んだことメモ変わりに記載しているページです。
 
 # 1.どんなAPIを作成したいのか考え整理しよう
+
 API設計のSTEP1として、どんなAPIを作成したいのか考えましょう。
 
 DBにアクセスしてデータを取得するのか、外部APIにリクエストするのか、色々な用途があると思います。<br>
@@ -10,6 +12,7 @@ DBにアクセスしてデータを取得するのか、外部APIにリクエス
 作成したいAPIのアイディアが出てきたら、箇条書きに書き出してみましょう。
 
 # 2.APIのエンドポイント(URL)を考える
+
 APIでやりたいこと・必要な機能を整理したら、そのAPIにアクセスするURLを考えましょう。<br>
 以下のようなURLのこと。
 
@@ -31,54 +34,64 @@ http://api.example.com/products/123
 大体の項目は理解できると思いますが、一部補足を記載します。
 
 ## 大文字小文字が混在しない、基本小文字を使用する
+
 基本的に他の会社では、URLに大文字があると404エラーをレスポンスするところが多い。
 
 ## 改造しやすい
+
 ここでいう改造とはURLを修正することで別のURLにすることができることを意味します。
 例えば、http://api.example.com/v1/todos/1 このURLの末尾の1を変更するだけで違うtodoにアクセスすることができることがイメージできると思います。
-これが100までは、http://api.example.com/v1/todos/1 でアクセスできても、100以降はhttp://api.example.com/v1/todos2/101 でないとアクセスできないと<br>
+これが100までは、http://api.example.com/v1/todos/1 でアクセスできても、100以降はhttp://api.example.com/v1/todos2/101
+でないとアクセスできないと<br>
 使用する目線では使いづらく思わぬ事故が発生してしまう可能性があります。
 
 ※セキュリティ的には、権限や他人の情報は見れないように制御した方がいい！
 
 ## サーバ側のアーキテクチャが反映されていない
+
 これはURLからアーキテクチャがわかるようにしないことを指しています。
 例えば、http://api.example.com/v1/todos/edit.php?todo=1 このURLではphpで作成されていることがわかってしまうと思います。
 アーキテクチャがURLからわかってしまうとセキュリティに危険が発生する可能性がありますので、やめた方がいいでしょう。
 
 ## ルールが統一されている
+
 実際に業務で設計する際には、すでにAPIがある場合がほとんどだと思います。
 その場合、他のAPIやドメインに合わせたURLにすることで統一感が出て使いやすいAPIになります。
 
 ※もちろん過去の設計がイけてない可能性もあるので、よく考えることも必要。
 
 # 3.HTTPメソッドも一緒に考えよう！
+
 URLを考える際に、一緒にHTTPメソッドも考えましょう。
-これを読まれている方に説明は不要だと思いますが、HTTPメソッドの一覧を記載しておきます。
 イメージとして、URLは名詞でHTTPメソッドは動詞と考えるとどのHTTPメソッドにすればいいのか考えやすいと思います。
 
-| メソッド名 | 説明 |
-| ---- | ---- |
-| GET | リソースの取得 |
-| POST | リソースの新規登録 |
-| PUT | 既存リソースの更新 |
-| DELETE | リソースの削除 |
-| PATCH | リソースの一部変更 |
-| HEAD | リソースのメタ情報の取得 |
+また一部環境では、GETとPOSTしか使用できない場合があります。 <br>
+その場合、リクエストヘッダ「X-HTTP-Method-Override」か「_method」というパラメータを使用して、POSTとしてリクエストを受け付けてAPI
+側で本来のHTTPメソッドと変換してあげるやり方もあります。この方法はフレームワークやライブラリなどもサポートしている。
+
+| メソッド名  | 説明           | 補足              |
+|--------|--------------|-----------------|
+| GET    | リソースの取得      | URLを取得          |
+| POST   | リソースの新規登録    | URLに新しいデータを追加する |
+| PUT    | 既存リソースの更新    | URLのデータを置き換える   |
+| DELETE | リソースの削除      | URLのデータを削除する    |
+| PATCH  | リソースの一部変更    | URLのデータを一部更新する  |
+| HEAD   | リソースのメタ情報の取得 |                 |
 
 # APIのエンドポイント(URL)設計の実施
-上記URLとHTTPメソッドの説明から今回の例のTodoaアプリのURLを設計していきたいと思います。
 
-| 目的 | URL | メソッド |
-| ---- | ---- | ---- |
-| ユーザーの登録 | http://api.example.com/v1/users | POST |
-| ユーザーの詳細情報取得 | http://api.example.com/v1/users/:id | GET |
-| ユーザーの編集 | http://api.example.com/v1/users/:id | PUT/PATCH |
-| Todoの取得・検索 | http://api.example.com/v1/users/:id/todos | GET |
-| Todoの登録 | http://api.example.com/v1/users/:id/todos | POST |
-| Todoの詳細情報取得 | http://api.example.com/v1/users/:id/todos/:id | GET |
-| Todoの編集 | http://api.example.com/v1/users/:id/todos/:id | PUT/PATCH |
-| Todoの削除 | http://api.example.com/v1/users/:id/todos/:id | DELETE |
+上記URLとHTTPメソッドの説明から今回のサンプルのTodoアプリのURLを設計していきたいと思います。
+
+| 目的          | URL                                           | メソッド      |
+|-------------|-----------------------------------------------|-----------|
+| ユーザーの登録     | http://api.example.com/v1/users               | POST      |
+| ユーザーの詳細情報取得 | http://api.example.com/v1/users/:id           | GET       |
+| ユーザーの編集     | http://api.example.com/v1/users/:id           | PUT/PATCH |
+| Todoの取得・検索  | http://api.example.com/v1/users/:id/todos     | GET       |
+| Todoの登録     | http://api.example.com/v1/users/:id/todos     | POST      |
+| Todoの詳細情報取得 | http://api.example.com/v1/users/:id/todos/:id | GET       |
+| Todoの編集     | http://api.example.com/v1/users/:id/todos/:id | PUT/PATCH |
+| Todoの削除     | http://api.example.com/v1/users/:id/todos/:id | DELETE    |
 
 ※URLのドメインは適当に記載しています
 
@@ -89,6 +102,7 @@ URLは同じでも異なるHTTPメソッドを使用することで、一つだ�
 さてここまで大体の設計ができたと思いますが、Todoの取得・検索のクエリパラメータの設計を考える必要があります。
 
 ## 検索とクエリパラメータの設計
+
 クエリパラメーターを考えるあたり、対象のURLを確認します。
 http://api.example.com/v1/users/:id/todos
 
