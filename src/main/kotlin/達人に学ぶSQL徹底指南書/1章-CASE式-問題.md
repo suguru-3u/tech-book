@@ -75,6 +75,24 @@ INSERT INTO OpenCourses (month, course_id) VALUES
 (201808, 2),
 (201808, 4);
 
+-- StudentClubテーブル作成
+CREATE TABLE StudentClub (
+std_id INTEGER,
+club_id INTEGER,
+club_name VARCHAR(100),
+main_club_fig CHAR(1)
+);
+
+-- StudentClubデータ挿入
+INSERT INTO StudentClub (std_id, club_id, club_name, main_club_fig) VALUES
+(100, 1, '野球', 'Y'),
+(100, 2, '吹奏楽', 'N'),
+(200, 3, 'バドミントン', 'Y'),
+(200, 4, 'サッカー', 'N'),
+(300, 4, 'サッカー', 'N'),
+(400, 5, '水泳', 'Y'),
+(500, 6, '囲碁', 'N');
+
 # No1
 問題文:
 
@@ -118,3 +136,9 @@ CourseMaster テーブルには講座の情報が、OpenCourses テーブルに�
 この2つのテーブルを用いて、各講座が2018年6月、7月、8月に開講されたかどうかを示すクロス集計表を作成するSQLクエリを作成してください。開講されている場合は「○」、開講されていない場合は「×」と表示してください。
 
 結果は「course_name」、「6月」、「7月」、「8月」の4列で表示してください。
+
+
+# No5
+StudentClub テーブルには、学生のID（std_id）、所属クラブのID（club_id）、クラブ名（club_name）、および主となるクラブかどうかを示すフラグ（main_club_fig）が格納されています。
+
+このテーブルから、「1つのクラブにのみ所属しており、かつそのクラブが主となるクラブ（main_club_fig = 'Y'）である学生のIDとそのクラブID」を抽出するSQLクエリを作成してください。

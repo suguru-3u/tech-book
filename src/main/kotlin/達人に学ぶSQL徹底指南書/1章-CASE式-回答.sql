@@ -67,3 +67,16 @@ SELECT
   CASE WHEN EXISTS (SELECT 1 FROM OpenCourses OC WHERE OC.course_id = CM.course_id AND OC.month = 201807) THEN '○' ELSE '×' END AS "7月",
   CASE WHEN EXISTS (SELECT 1 FROM OpenCourses OC WHERE OC.course_id = CM.course_id AND OC.month = 201808) THEN '○' ELSE '×' END AS "8月"
 FROM CourseMaster CM;
+
+--No5 回答
+SELECT
+  std_id,
+  MAX(
+    CASE
+      WHEN main_club_fig = 'Y' THEN club_id
+      ELSE NULL
+    END
+  ) AS main_club
+FROM StudentClub
+GROUP BY std_id
+HAVING COUNT(*) = 1 AND COUNT(CASE WHEN main_club_fig = 'Y' THEN 1 ELSE NULL END) = 1;
