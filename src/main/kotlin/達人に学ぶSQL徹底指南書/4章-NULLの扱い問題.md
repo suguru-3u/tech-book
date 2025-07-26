@@ -73,10 +73,6 @@ id	name	age
 
 ageが不明（NULL）ではない従業員のnameとageをすべて取得してください。
 
-SELECT name, age
-from Employees
-where age is not null;
-
 # 問題2
 
 問題2: 部署の割り当てと集計
@@ -96,9 +92,6 @@ project_id	project_name	department_id
 105	Epsilon	NULL
 
 department_idが割り当てられているプロジェクトの数をカウントしてください。
-
-SELECT COUNT(department_id)
-FROM Projects;
 
 # 問題3 
 
@@ -125,8 +118,3 @@ ProductsB
 ProductsAテーブルから、ProductsBテーブルのpriceと一致するpriceを持つ製品（product_id, name, price）をすべて取得してください。
 
 ただし、priceがNULLである場合は一致とみなさないでください。
-
-SELECT product_id, name, price
-FROM ProductsA
-WHERE price IS NOT NULL
-AND price IN (SELECT price FROM ProductsB WHERE price IS NOT NULL);
